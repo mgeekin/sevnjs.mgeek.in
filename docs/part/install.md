@@ -23,6 +23,7 @@ And create a `script.js` file in same directory as `index.html`. **sevn** will l
 ##### Example index.html and script.js
 
 index.html
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -36,7 +37,8 @@ index.html
 ```
 
 script.js
-```script
+
+```javascript
 //Write your app logic
 //load(["./yourscript.js","./yourstyle.scss"]) //script.js is loaded automatically.
 append(app, "", "over") /* reset app */
