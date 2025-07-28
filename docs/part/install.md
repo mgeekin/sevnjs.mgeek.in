@@ -8,22 +8,21 @@ git clone https://github.com/SevnJS/sevn-init.git
 
 
 
-## Method 1:  Add script tag in html and write app logic in script.js
+## Method 2:  Add script tag in html and write app logic in script.js
 
 ```html
 <script src="https://sevnjs.github.io/cdn/latest/sevn.min.js"></script>
 ```
-#### Or use fixed verion as
+#### Or use fixed version as
 ```html
-<script src="https://sevnjs.github.io/cdn/v0.8.1/sevn.min.js"></script>
+<script src="https://sevnjs.github.io/cdn/v0.8.3/sevn.min.js"></script>
 ```
 
 And create a `script.js` file in same directory as `index.html`. **sevn** will load `script.js` . 
 
 ##### Example index.html and script.js
 
-index.html
-
+`index.html`
 ```html
 <!DOCTYPE html>
 <html>
@@ -36,8 +35,7 @@ index.html
 </html>
 ```
 
-script.js
-
+`script.js`
 ```javascript
 //Write your app logic
 //load(["./yourscript.js","./yourstyle.scss"]) //script.js is loaded automatically.

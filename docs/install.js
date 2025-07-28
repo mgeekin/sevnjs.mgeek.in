@@ -1,4 +1,4 @@
-append(appmain, gen(section, "install", "", 'section,container'))
+append(appmain, gen(section, "install", "", 'section,container'));
 
 
 function loadInstall(){
@@ -7,11 +7,11 @@ function loadInstall(){
     getfile("./part/install.md",installmd =>{
         parsemd(installmd, content => {
             append(`#install`, content,"o")
-            grab(`#installButton[0]`).addEventListener('click', () => { install.scrollIntoView({ block: 'center', behavior: 'smooth' }) })
+            setTimeout(() => {
+                grab(`#installButton[0]`).addEventListener('click', () => { install.scrollIntoView({ block: 'center', behavior: 'smooth' }) });
+            },3000);
+    });
 
-        })
-    })
+};
 
-}
-
-loadInstall()
+loadInstall();

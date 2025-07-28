@@ -37,10 +37,10 @@ instArray = ['Tagname can be any commonly used html tag, like div, p, img, span 
     gen(code, "", 'gen(div,"someId","Text inside element","list of classes","srcOrHref")'),
     "last argument is required with tags like img, a, script, video where source needs to be specified",
 ]
-// var heroinstructionsButton = grab(`#instructionsButton[0]`)
-// heroinstructionsButton.addEventListener('click', () => { instructions.scrollIntoView({ block: 'center', behavior: 'smooth' }) })
-// setTimeout(grab(`#instructionsButton[0]`).addEventListener('click', () => { instructions.scrollIntoView({ block: 'center', behavior: 'smooth' }) })
-// ,2000)
+var heroinstructionsButton = grab(`#instructionsButton[0]`)
+heroinstructionsButton.addEventListener('click', () => { instructions.scrollIntoView({ block: 'center', behavior: 'smooth' }) })
+setTimeout(grab(`#instructionsButton[0]`).addEventListener('click', () => { instructions.scrollIntoView({ block: 'center', behavior: 'smooth' }) })
+,3000)
 
 
 }
