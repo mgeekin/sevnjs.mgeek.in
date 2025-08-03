@@ -1,13 +1,11 @@
 function SevnJS() {
     const license = "copyrights Prateek Raj Gautam, soon to be released under Apache 2.0";
-    const version = `v0.8.2`;
+    const version = `v0.8.5`;
 
     //grab start
     const grab = (parentidstr) => {
         var match = parentidstr.match(/^([^\[]*)\[*(\d*)\]*$/mi);
         var parentid = match[1];
-        if (match[2].length > 0) var no = match[2]
-
         var parentElement = null;
         try {
             if (parentid instanceof Object == true) { parentElement = parentid }
@@ -19,10 +17,8 @@ function SevnJS() {
             console.log(`grab(${parentidstr})`);
             console.error(err);
         }
-        if (no) return parentElement[no]
+        if (match[2].length > 0) return parentElement[match[2]];
         else return parentElement
-
-
     };
     //grab end
 
@@ -90,7 +86,7 @@ function SevnJS() {
             list: /^\s*(?m:^(?:\s*(?:\*|-|\d+\.)\s+[^\n]+)(?:\n|$))+/m,
             reference: /^\n+\-{3,}$/im,
             paragraph: /^(^[^-#|>\s][^\n]*(?:\n[^-#|>\s][^\n]*)*)/im,
-
+            empty: /^\s*[\s\n]*/m,
         }
 
 
@@ -99,24 +95,56 @@ function SevnJS() {
             var pattern = /^\s*```([^\n]*)\n([^`]*)```[\s\n]*/mi;
             const match = block.match(pattern);
             if (match) {
-                var matchArray = Array.from(match)
-                var res = gens(pre, "", gens(code, "", matchArray[2], `language-${matchArray[1]},${matchArray[1]},code-block`))
+                var matchArray = Array.from(match);
+                var content = matchArray[2];
+                var lang = matchArray[1];
+                var res = gens(pre, "", gens(code, "", content, `language-${lang},${lang},code-block`));
                 return res
+            }
+        }
+
+        const checklistrender = (block) => {
+            // var pattern = /^\s*(?:^\s*-\s+\[(?:\s*|[xX*])\]\s+[^\n]*\n?)+/gm;
+            // var pattern = /^\s*-\s+\[(?:\s*|[xX*])\]\s+[^\n]*$/gm;
+            // const match = block.match(pattern);
+            var pattern = /-\s+\[([^\]]*)\]\s+([^\n]*)/gm;
+            const match = block.matchAll(pattern);
+            var res = "";
+            if (match) {
+                var matchArray = Array.from(match);
+                matchArray.forEach(parts=>{
+                    var checked = (parts[1]== " ") ? false:true;
+                    var checkboxid = `checkbox-id-${checkboxno}`;
+                    res += gens(input,checkboxid,parts[2],"parsemd",{value:parts[2],"type":"checkbox",checked:checked})+gens(label,"",parts[2],"parsemd",{"for":checkboxid})+"<br>";
+                    res=res.replaceAll(`checked="false"`,"");
+                    checkboxno += 1;
+                })
+                return res
+            }
+        }
+
+
+
+        const emptyrender = (block) => {
+            var pattern = /^(\s*[\s\n]*)/m;
+            const match = block.match(pattern);
+            if (match) {
+                return `<br>`
             }
         }
 
         const tablerender = (table) => {
 
 
-            var tableHeadBodySepratorPattern = /(^\|)(?=(:|-))([^\w\d\s]*?)(\|\s*$)/gm
-            var sep = table.matchAll(tableHeadBodySepratorPattern)
-            var sep = Array.from(sep)
+            var tableHeadBodySepratorPattern = /(^\|)(?=(:|-))([^\w\d\s]*?)(\|\s*$)/gm;
+            var sep = table.matchAll(tableHeadBodySepratorPattern);
+            var sep = Array.from(sep);
             if (sep.length > 0) {
-                var Sep = sep[0][0]
-                var alignment = Sep.substr(1, Sep.length - 2)
-                alignment = alignment.replaceAll(":---:", "center").replaceAll(":---", "left").replaceAll("---:", "right").replaceAll("---", "justify")
-                alignment = alignment.split("|")
-                var T = table.split(Sep)
+                var Sep = sep[0][0];
+                var alignment = Sep.substr(1, Sep.length - 2);
+                alignment = alignment.replaceAll(":---:", "center").replaceAll(":---", "left").replaceAll("---:", "right").replaceAll("---", "justify");
+                alignment = alignment.split("|");
+                var T = table.split(Sep);
                 var thead = T[0];
                 var tbody = T[1];
                 thead = `\n\t<thead>${tableRowsParser(thead, alignment)}\n</thead>`;
@@ -296,12 +324,12 @@ function SevnJS() {
 
             // // blockMath
             //https://regex101.com/r/QdJcQS/1
-            var blockMathPattern = /\${2}([^$\n]+)\${2}/gm
-            match1 = md.matchAll(blockMathPattern)
-            matchList = Array.from(match1)
+            var blockMathPattern = /\${2}([^$\n]+)\${2}/gm;
+            match1 = md.matchAll(blockMathPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 // log(p)
-                md = md.replaceAll(p[0], `\\[ ${p[1]} \\]`)
+                md = md.replaceAll(p[0], `\\[ ${p[1]} \\]`);
             })
 
 
@@ -310,11 +338,11 @@ function SevnJS() {
             // var inlineMathPattern = /(?<!\$)\$([^$\n]+)\$(?!\$)/gm
             var inlineMathPattern = /(?<!\$)\$([^$\n]+)\$(?!\$)/mg;
 
-            match1 = md.matchAll(inlineMathPattern)
-            matchList = Array.from(match1)
+            match1 = md.matchAll(inlineMathPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 // log(p)
-                md = md.replaceAll(p[0], `\\( ${p[1]} \\)`)
+                md = md.replaceAll(p[0], `\\( ${p[1]} \\)`);
             })
 
 
@@ -322,25 +350,25 @@ function SevnJS() {
             // // imageurl
             // https://regex101.com/r/EXVZcK/1
 
-            var imageUrlPattern = /!\[([^\]]*)]\("?([^\)"']*)"?\)/gm
-            match1 = md.matchAll(imageUrlPattern)
-            matchList = Array.from(match1)
+            var imageUrlPattern = /!\[([^\]]*)]\("?([^\)"']*)"?\)/gm;
+            match1 = md.matchAll(imageUrlPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 //               console.log(p)
-                md = md.replaceAll(p[0], `\n<img src="${p[2]}" alt="${p[1]}" />`)
+                md = md.replaceAll(p[0], `\n<img src="${p[2]}" alt="${p[1]}" />`);
 
             })
 
             // // link
             // https://regex101.com/r/APBkU8/1
             // var linkPattern = /[^!]\[([^\]]*)\]\(([^\)]*)\)/gmi
-            var linkPattern = /(?<!!)\[([^\]]*)\]\(([^\)]*)\)/gmi
+            var linkPattern = /(?<!!)\[([^\]]*)\]\(([^\)]*)\)/gmi;
 
-            match1 = md.matchAll(linkPattern)
-            matchList = Array.from(match1)
+            match1 = md.matchAll(linkPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 //                    log(p)
-                md = md.replaceAll(p[0], `<a href="${p[2]}">${p[1]}</a>`)
+                md = md.replaceAll(p[0], `<a href="${p[2]}">${p[1]}</a>`);
 
             })
 
@@ -353,13 +381,13 @@ function SevnJS() {
             matchList = Array.from(match1)
             matchList.forEach(p => {
                 if (p[1].length == 3) {
-                    md = md.replaceAll(p[0], `<em><strong>${p[2]}</strong></em>`)
+                    md = md.replaceAll(p[0], `<em><strong>${p[2]}</strong></em>`);
                 }
                 else if (p[1].length == 2) {
-                    md = md.replaceAll(p[0], `<strong>${p[2]}</strong>`)
+                    md = md.replaceAll(p[0], `<strong>${p[2]}</strong>`);
                 }
                 else if (p[1].length == 1) {
-                    md = md.replaceAll(p[0], `<em>${p[2]}</em>`)
+                    md = md.replaceAll(p[0], `<em>${p[2]}</em>`);
                 }
             })
 
@@ -370,8 +398,8 @@ function SevnJS() {
             // https://regex101.com/r/MLsQRh/1
             //   var strikethroughPattern = /([~=]{2})(.*)\1/igm
             var strikethroughPattern = /([~=]{2})([^~=\n]+)\1/igm
-            match1 = md.matchAll(strikethroughPattern)
-            matchList = Array.from(match1)
+            match1 = md.matchAll(strikethroughPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 if (p[1][0] == "~") { md = md.replace(p[0], `<del class='parsedmd-del'>${p[2]} </del>`) }
                 else if (p[1][0] == "=") { md = md.replace(p[0], `<mark class='parsedmd-mark'>${p[2]} </mark>`) }
@@ -381,44 +409,44 @@ function SevnJS() {
 
             // reference
             https://regex101.com/r/eLzXSC/1                                 
-            var referencelinkPattern = /(?<!!)\[([^\]]*)\]\s{0,3}\[([^\]]*)\]/gmi
+            var referencelinkPattern = /(?<!!)\[([^\]]*)\]\s{0,3}\[([^\]]*)\]/gmi;
 
-            match1 = md.matchAll(referencelinkPattern)
-            matchList = Array.from(match1)
+            match1 = md.matchAll(referencelinkPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 //                    log(p)
-                md = md.replaceAll(p[0], `<a href="#${p[2]}">${p[1]}</a>`)
+                md = md.replaceAll(p[0], `<a href="#${p[2]}">${p[1]}</a>`);
 
             })
 
             // Blockreferencelist
             // https://regex101.com/r/xu97SN/1
-            var listBlockPattern = /(^ *(\[[^\]]*\]:)\s+[^\n]*){1,}/gmi
-            match1 = md.matchAll(listBlockPattern)
-            matchList = Array.from(match1)
+            var listBlockPattern = /(^ *(\[[^\]]*\]:)\s+[^\n]*){1,}/gmi;
+            match1 = md.matchAll(listBlockPattern);
+            matchList = Array.from(match1);
             matchList.forEach(p => {
                 var block = p[0]
                 // referencelistBlock
                 // https://regex101.com/r/JC0xSx/1
-                var listPattern = /^\[([^\]]*)\]:\s+([^\n]*)$/gmi
-                list = block.matchAll(listPattern)
-                listEntry = Array.from(list)
+                var listPattern = /^\[([^\]]*)\]:\s+([^\n]*)$/gmi;
+                list = block.matchAll(listPattern);
+                listEntry = Array.from(list);
                 listEntry.forEach(li => {
-                    block = block.replaceAll(li[0], `\n\t<span id="${li[1]}">${li[2]}</span> `)
+                    block = block.replaceAll(li[0], `\n\t<span id="${li[1]}">${li[2]}</span> `);
                 })
 
                 // subreferencelist
                 // https://regex101.com/r/DYvI2z/1
-                var sublistPattern = /^ +(\*|-)\s+([^\n]*)$/gmi
-                list = block.matchAll(sublistPattern)
-                listEntry = Array.from(list)
+                var sublistPattern = /^ +(\*|-)\s+([^\n]*)$/gmi;
+                list = block.matchAll(sublistPattern);
+                listEntry = Array.from(list);
                 listEntry.forEach(li => {
                     //                        block = block.replaceAll(li[0], `\n<ul>\n\t<li>${li[1]}</li></ul>`) trying sub list
-                    block = block.replaceAll(li[0], `\n<ul>\n\t<li>${li[2]}</li></ul>`)
+                    block = block.replaceAll(li[0], `\n<ul>\n\t<li>${li[2]}</li></ul>`);
                 })
 
                 // md = md.replaceAll(p[0], `\n<ul>${block}</ul>`)
-                md = md.replaceAll(p[0], `\n${block}`)
+                md = md.replaceAll(p[0], `\n${block}`);
             })
             return md
 
@@ -447,20 +475,22 @@ function SevnJS() {
 
 
 
-        var checkboxno = grab("input").length
-        var lex = []
+        var checkboxno = grab("input").length;
+        var lex = [];
 
         //preprocess for code to html
         // // code
         // https://regex101.com/r/WpO7gY/1
         // codePattern = /```([^\s]*)([^```]*)```/gmi
-        var codePattern = /`{3}([^\n]*)\n([^`]*)`{3}/gmi
-        var match1 = mdinput.matchAll(codePattern)
-        var matchList = Array.from(match1)
-        matchList.forEach(p => {
-            //               console.log(p)
-            mdinput = mdinput.replaceAll(p[0], `\n<pre><code class="${p[1]}, language-${p[1]},code-block">${p[2]}</code></pre>`)
-        })
+
+
+        // var codePattern = /`{3}([^\n]*)\n([^`]*)`{3}/gmi
+        // var match1 = mdinput.matchAll(codePattern)
+        // var matchList = Array.from(match1)
+        // matchList.forEach(p => {
+        //     //               console.log(p)
+        //     mdinput = mdinput.replaceAll(p[0], `\n<pre><code class="${p[1]}, language-${p[1]},code-block">${p[2]}</code></pre>`)
+        // })
 
 
 
@@ -485,32 +515,33 @@ function SevnJS() {
         }
 
 
-        lex = lex.filter(o => o.type !== "empty")
+        // lex = lex.filter(o => o.type !== "empty")
 
 
         //foreachitem in lex
         for (var j = 0; j < lex.length; j++) {
             var block = lex[j]
             var rend = ""
-            //renderhtml
-            if (block.type == "html1" || block.type == "html2") {
-                var rend = block.content
-            }
             //rendercode
-            else if (block.type == "code") {
-                var rend = coderender(block.content)
+            if (block.type == "code") {
+                var rend = coderender(block.content);
             }
+            //renderhtml
+            else if (block.type == "html1" || block.type == "html2") {
+                var rend = block.content;
+            }
+            
             //rendertable
             else if (block.type == "table") {
-                var rend = tablerender(block.content)
+                var rend = tablerender(block.content);
             }
             //renderlist
             else if (block.type == "list") {
-                var rend = listrender(block.content)
+                var rend = listrender(block.content);
             }
             //renderblockquote
             else if (block.type == "block" || block.type == "blockquote") {
-                var rend = blockquoterender(block.content)
+                var rend = blockquoterender(block.content);
             }
             //rendertab
             else if (block.type == "tab") {
@@ -518,22 +549,25 @@ function SevnJS() {
             }
             //renderparagraph
             else if (block.type == "paragraph") {
-                var rend = paragraphrender(block.content)
+                var rend = paragraphrender(block.content);
             }
             else if (block.type == "heading1") {
-                var rend = heading1render(block.content)
+                var rend = heading1render(block.content);
             }
-            else if (block.type == "heading2") {
-                var rend = heading2render(block.content)
+            else if (block.type == "checklist") {
+                var rend = checklistrender(block.content);
+            }
+            else if (block.type == "empty") {
+                var rend = emptyrender(block.content);
             }
 
-            lex[j].render1 = rend
+            lex[j].render1 = rend;
         }
 
 
         var rend1join = ""
         for (var j = 0; j < lex.length; j++) {
-            rend1join = `${rend1join}${lex[j].render1}`
+            rend1join = `${rend1join}${lex[j].render1}`;
         }
 
         callback(rend1join)
@@ -549,34 +583,37 @@ function SevnJS() {
 
     //append start
     const append = (parentid, childhtml, position = 'after') => {
-        position = position.toLowerCase()
+        position = position.toLowerCase();
         try {
             if (parentid instanceof Object == true) { var parentElement = parentid }
             else {
-                var parentElement = document.querySelectorAll(parentid)[0];
+                var match = parentid.match(/^([^\[]*)\[*(\d*)\]*$/mi);
+                var parentidstr = match[1];
+                var no = match[2] > 0 ? match[2] : 0;
+                var parentElement = document.querySelectorAll(parentidstr)[no];
             }
             // var parentElement = self.get(parentid)[0]
-            var T = document.createElement('div')
-            T.id = 'T'
-            T.innerHTML = ""
+            var T = document.createElement('div');
+            T.id = 'T';
+            T.innerHTML = "";
             // array
             if (Array.isArray(childhtml) == true) {
 
                 childhtml.forEach((child, index) => {
                     if (typeof child == 'string') {
-                        T.innerHTML += child
+                        T.innerHTML += child;
                     }
                     else if (typeof child != 'string') {
                         if (child.outerHTML != undefined) {
-                            T.innerHTML += child.outerHTML
+                            T.innerHTML += child.outerHTML;
                         }
                         if (child.outerHTML == undefined) {
-                            T.innerHTML += objtohtml(child)
+                            T.innerHTML += objtohtml(child);
                         }
                     }
                     //may be removed
                     else if (self.isHTML(child)) {
-                        T.innerHTML += child.outerHTML
+                        T.innerHTML += child.outerHTML;
                     }
                     // console.log(T.innerHTML)
                 });
@@ -588,14 +625,14 @@ function SevnJS() {
 
                 if (childhtml != undefined) {
                     if (typeof childhtml == 'string') {
-                        T.innerHTML += childhtml
+                        T.innerHTML += childhtml;
                     }
                     if (typeof childhtml != 'string') {
                         if (childhtml.outerHTML != undefined) {
-                            T.innerHTML += childhtml.outerHTML
+                            T.innerHTML += childhtml.outerHTML;
                         }
                         if (childhtml.outerHTML == undefined) {
-                            T.innerHTML += childhtml
+                            T.innerHTML += childhtml;
                         }
                     }
                 }
@@ -603,33 +640,64 @@ function SevnJS() {
 
 
             if (position == 'before' || position == 'b') {
-                parentElement.innerHTML = T.innerHTML + parentElement.innerHTML
+                parentElement.innerHTML = T.innerHTML + parentElement.innerHTML;
             } else if (position == 'over' || position == 'o') {
-                if (T.innerHTML != null) parentElement.innerHTML = T.innerHTML
-                if (T.innerHTML == null) parentElement.innerHTML = ''
+                if (T.innerHTML != null) parentElement.innerHTML = T.innerHTML;
+                if (T.innerHTML == null) parentElement.innerHTML = '';
             } else if (position == 'replace' || position == 'r') {
-                parentElement.outerHTML = T.innerHTML
+                parentElement.outerHTML = T.innerHTML;
             } else if (position == 'after' || position == 'a') {
-                parentElement.innerHTML = parentElement.innerHTML + T.innerHTML
+                parentElement.innerHTML = parentElement.innerHTML + T.innerHTML;
             } else if (position == 'parent' || position == 'p') {
-                var oldElement = parentElement.outerHTML
-                parentElement.innerHTML = ""
-                T.childNodes[0].innerHTML += oldElement
-                parentElement.outerHTML = T.innerHTML
+                var oldElement = parentElement.outerHTML;
+                parentElement.innerHTML = "";
+                T.childNodes[0].innerHTML += oldElement;
+                parentElement.outerHTML = T.innerHTML;
             } else {
-                parentElement.innerHTML = parentElement.innerHTML + T.innerHTML
+                parentElement.innerHTML = parentElement.innerHTML + T.innerHTML;
             }
         }
         catch (err) {
-            console.log(`append(${parentid}, ${childhtml}, ${position})`)
-            console.error(err)
+            console.log(`append(${parentid}, ${childhtml}, ${position})`);
+            console.error(err);
         }
 
     };
     //append 
 
-    //gen start
-    const gen = (elementtype, idin, htmlin, classin, src, event) => {
+   //gen start
+    const gen = (elementtype, idin, htmlin,classin, src, event) => {
+        var elementarray = elementtype.replaceAll(/\s+/g,"").split(",");
+        var idarray = idin.replaceAll(/\s+/g,"").split(",");
+        // if elementarray.length > 1; recursive
+        if (elementarray.length > 1){
+            //pullout first element
+            elementarray=elementarray.toReversed();
+            elementtype = elementarray.pop();
+            var elementstr = elementarray.toReversed().join(",");
+            if (idarray.length > 1){
+                idarray = idarray.toReversed();
+                idin = idarray.pop();
+                var idinstr = idarray.toReversed().join(","); 
+            }
+            else if (idarray.length == 1){
+                idin = idarray[0];
+                var idinstr = "";
+            }
+            else {
+                idin= "";
+                var idinstr= "";
+            }
+            //calling recursive and update with created element
+            htmlin = gens(elementstr,idinstr,htmlin,classin,src,event);
+            classin="";
+            src="";
+            event="";
+        }
+        else if (elementarray.length = 1){
+            elementtype = elementarray[0];
+            idin = idarray[0];
+        };
         try {
             if (htmlin != undefined) {
                 // console.log(htmlin.isArray)
@@ -675,7 +743,7 @@ function SevnJS() {
                     var element = document.createElement("div")
                     let arrayholder = document.createElement("div", "arrayholder", "")
                     // console.log(htmlin.length)
-                    var checkfirstinput = htmlin[0]
+                    var checkfirstinput = htmlin[0];
 
                     for (var jj = 0; jj < htmlin.length; jj++) {
 
@@ -715,15 +783,15 @@ function SevnJS() {
                         // if object
                         if (typeof checkfirstinput == 'object') {
                             // elementarray = objtohtml(htmlin[jj])
-                            elementarray = jsonToElement(htmlin[jj])
-                            var elementtypeholder = document.createElement(elementtype)
-                            elementtypeholder.append(elementarray)
-                            elementarray = elementtypeholder
+                            elementarray = jsonToElement(htmlin[jj]);
+                            var elementtypeholder = document.createElement(elementtype);
+                            elementtypeholder.append(elementarray);
+                            elementarray = elementtypeholder;
                         }
-                        arrayholder.innerHTML += elementarray.outerHTML
+                        arrayholder.innerHTML += elementarray.outerHTML;
 
                     }
-                    element = arrayholder.innerHTML
+                    element = arrayholder.innerHTML;
                     // console.log(element)
                 }
 
@@ -745,7 +813,7 @@ function SevnJS() {
                 if (src instanceof Object == true) {
                     var objArray = Object.entries(src);
                     objArray.forEach(A1 => {
-                        element.setAttribute(A1[0], A1[1])
+                        element.setAttribute(A1[0], A1[1]);
                     })
 
                 }
@@ -766,35 +834,36 @@ function SevnJS() {
     //gen end
 
 
+
+
    //load start
     const load = (srcList, pos = "head") => {
         //loadlink start
         const loadlink = (currentLink) => {
-            currentLink
-            var extensionStart = 0
-            var extensionEnd = currentLink.length
-            var extension = ""
+            var extensionStart = 0;
+            var extensionEnd = currentLink.length;
+            var extension = "";
             if (currentLink.length > 0) {
 
                 for (let i = extensionEnd; i > 0; i--) {
                     if (currentLink[i] == ".") {
                         extensionStart = i;
-                        extension = currentLink.slice(extensionStart, extensionEnd)
+                        extension = currentLink.slice(extensionStart, extensionEnd);
                         break
                     }
                 }
                 if (extension == ".js") {
-                    self.loadjs(currentLink, pos)
+                    self.loadjs(currentLink, pos);
                 } else if (extension == ".css") {
-                    self.loadcss(currentLink, pos)
+                    self.loadcss(currentLink, pos);
                 } else if (extension == ".scss") {
                     // loadscss(getfile(currentLink))
                     self.getfile(currentLink, (res) => { loadscss(res, currentLink) })
                 } else if (extension == ".html") {
-                    self.loadhtml(currentLink, pos)
+                    self.loadhtml(currentLink, pos);
                 } else {
                     // console.log('loading object')
-                    self.loadMetaFromObject(currentLink, pos)
+                    self.loadMetaFromObject(currentLink, pos);
                 }
             }
         }
@@ -804,17 +873,17 @@ function SevnJS() {
             if (pos == undefined) { var pos = 'head' }
             // if  not array convert it to array
             if (Array.isArray(srcList) == false) {
-                srcList = srcList.replaceAll(/\s+/g, ",").replaceAll(/,{2,}/g, ",").split(",")
+                srcList = srcList.replaceAll(/\s+/g, ",").replaceAll(/,{2,}/g, ",").split(",");
             }
             // if (srcList.length > 0) {
                 for (var i = 0; i < srcList.length; i++) {
-                    loadlink(srcList[i])
+                    loadlink(srcList[i]);
                 }
             // }
         }
         catch (err) {
-            console.log(srcList)
-            console.error(err)
+            console.log(srcList);
+            console.error(err);
         }
     }
     //load end  
@@ -822,7 +891,7 @@ function SevnJS() {
 
     var self = {}
     self = (...args) => {
-        console.log(args.length)
+        console.log(args.length);
         if (args.length == 1) {
             let selector = args[0];
             return document.querySelectorAll(selector)
@@ -1450,7 +1519,7 @@ function SevnJS() {
     self.init = (RequiredFunctions) => {
         self.loadBasicHtmlVariables();
         self.loadFunctions(RequiredFunctions);
-        console.info('SevnJS Ready');
+        console.info(`SevnJS version ${version}\ Ready`);
     };
     // self.init();
     self.loadBasicHtmlVariables();
