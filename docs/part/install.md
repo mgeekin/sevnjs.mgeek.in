@@ -15,7 +15,7 @@ git clone https://github.com/SevnJS/sevn-init.git
 ```
 #### Or use fixed version as
 ```html
-<script src="https://sevnjs.github.io/cdn/v0.8.3/sevn.min.js"></script>
+<script src="https://sevnjs.github.io/cdn/v0.9.4/sevn.min.js"></script>
 ```
 
 And create a `script.js` file in same directory as `index.html`. **sevn** will load `script.js` . 
