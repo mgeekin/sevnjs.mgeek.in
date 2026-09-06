@@ -3,12 +3,12 @@
 function loadHeader() {
 
     append(appheader, "", "over");
-    append(appheader, gen("span", "title"));
-    append(title,
+    append(appheader, gen("span", "apptitle"));
+    append(apptitle,
            gen("span", "logo", gen("img", "sitelogo", "", "sitelogo", { "src": site.logo })),
     );
 
-    append(title,
+    append(apptitle,
             gen("span", "siteheading")
     );
 
@@ -115,7 +115,7 @@ var headerStyle = `
         }
     }
 
-    #title {
+    #apptitle {
         display: flex;
 
         #siteheading {

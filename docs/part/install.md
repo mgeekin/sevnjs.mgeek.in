@@ -11,7 +11,9 @@ git clone https://github.com/SevnJS/sevn-init.git
 ## Method 2:  Add script tag in html and write app logic in script.js
 
 ```html
+
 <script src="https://sevnjs.github.io/cdn/latest/sevn.min.js"></script>
+
 ```
 #### Or use fixed version as
 ```html
