@@ -5,14 +5,14 @@
 
 :root {
 
-    --hue: 235;
-    --sat: 70%;
-    --light: 12%;
+    --hue: 275;
+    --sat: 75%;
+    --light: 10%;
 
 
     // --hueTwo: 240;
 
-    --hueAscent: 180;
+    --hueAscent: 190;
     --satAscent: 100%;
     --lightAscent: 55%;
 
@@ -20,13 +20,12 @@
 
     --alpha: 1;
     // --lightfactor: 1;
-    --textColor: white;
+    --textColor: hsl(0, 0%, 90%);
     // --colorBody: linear-gradient(-30deg, hsla(var(--hue, 239), var(--sat, 40%), calc(var(--light, 42%) * var(--lightFactor, 1)), var(--alpha, 1)) 70%, hsla(var(--hue, 340), var(--sat, 83%), calc(var(--light, 55%) * var(--lightFactor, 1)), var(--alpha, 1)) 200%) no-repeat scroll 0 !default;
     --fontScale: 1;
-    --fontFamily: 'Poppins';
+    --fontFamily: 'ubuntu','Poppins';
     --fontFallback: "Courier", "Courier New", "Lucida Console", Inconsolata, terminal, consolas, arial;
 
-    --textColor: white;
 
     --colorScheme: normal;
     --colorBody:hsla(var(--h, 239), var(--s), var(--l), var(--a));
@@ -66,5 +65,5 @@
 body {
     background: var(--colorBody);
     text-shadow: var(--textShadow);
-    font-family: var(--fontFamily),var(--fontFallback);
+    // font-family: var(--fontFamily)  var(--fontFallback) Arial;
 }

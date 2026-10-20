@@ -14,11 +14,11 @@ const WebHelper = () => {
 
         var functionList = 'addCopyIcon,copyParentText,loadCopyright,loadSpaceGame,updatePageNav'
         functionList.split(",").forEach(v => {
-            let expression = `window.${v}=GeneratorWebHelper.${v}`
+            let expression = `window.${v}=WebHelper.${v}`
             Function("return " + expression)()
         })
 
-        console.info("GeneratorWebHelper")
+        console.info("WebHelper")
     };
     self.addCopyIcon = (element = null) => {
 
@@ -29,7 +29,6 @@ const WebHelper = () => {
                 --s:var(--sat,80%);
                 --l:var(--light,15%);
                 position: relative;
-                display: block;
                 .copyIcon{
                     position: absolute;
                     top: .5em;
@@ -92,7 +91,7 @@ const WebHelper = () => {
                 if (codeblocks.length != 0) {
                     codeblocks.forEach(c => {
                         c.classList.add("copy")
-                        c.append(gen(span, "", "", "copyIcon", { "title": "click to copy", "onclick": "GeneratorWebHelper().copyParentText(this.parentElement)" }))
+                        c.append(gen(span, "", "", "copyIcon", { "title": "click to copy", "onclick": "WebHelper().copyParentText(this.parentElement)" }))
                     })
                 }
             }, 2000)
@@ -762,9 +761,9 @@ const WebHelper = () => {
             // PageNavSelf.customizer()
             PageNavSelf.customizer().init()
 
-            GeneratorWebHelper().PageNav().updateActiveSection()
+            WebHelper().PageNav().updateActiveSection()
             // document.addEventListener('scroll', PageNavSelf.updateActiveSection)
-            document.addEventListener("scroll", () => { GeneratorWebHelper().PageNav().updateActiveSection() })
+            document.addEventListener("scroll", () => { WebHelper().PageNav().updateActiveSection() })
             console.info("PageNav")
         }
 
@@ -831,9 +830,9 @@ const WebHelper = () => {
             // append(themeControl, gen("h3", "", "Theme Control"))
             append(themeControl, gen("ul", "themeControlUl", "", 'themeControlUl'))
             var ThemeButtonAndFunction = [
-                ["GeneratorWebHelper().PageNav().customizer().resetTheme()", 'restart_alt', "Reset Theme"],
-                ["GeneratorWebHelper().PageNav().customizer().toggleDarkMode()", 'dark_mode', "Dark Mode / Light Mode"],
-                ["GeneratorWebHelper().PageNav().customizer().toggleCustomizerFn()", 'tune', 'Customize Color Theme']
+                ["WebHelper().PageNav().customizer().resetTheme()", 'restart_alt', "Reset Theme"],
+                ["WebHelper().PageNav().customizer().toggleDarkMode()", 'dark_mode', "Dark Mode / Light Mode"],
+                ["WebHelper().PageNav().customizer().toggleCustomizerFn()", 'tune', 'Customize Color Theme']
             ]
             ThemeButtonAndFunction.forEach(t => {
                 append(themeControlUl, gen("li", "", t[1], 'material-symbols-outlined', { "onclick": t[0], "title": t[2], "tabindex": "0" }))
@@ -1002,8 +1001,8 @@ const WebHelper = () => {
                 append("#customizer", gen("h3", "customizerh3", "customizer", ''))
                 customizerSelf.appendSliders()
                 append("#customizer", gen(div, "customizerButtonGroup", "", "customizerButtonGroup"))
-                append("#customizerButtonGroup", gen(span, "customizerSaveThemeButton", 'Save', 'themeButton', { "onclick": "GeneratorWebHelper().PageNav().customizer().saveTheme()" }))
-                append("#customizerButtonGroup", gen(span, "customizerResetThemeButton", 'Reset', 'themeButton', { "onclick": "GeneratorWebHelper().PageNav().customizer().resetTheme()" }))
+                append("#customizerButtonGroup", gen(span, "customizerSaveThemeButton", 'Save', 'themeButton', { "onclick": "WebHelper().PageNav().customizer().saveTheme()" }))
+                append("#customizerButtonGroup", gen(span, "customizerResetThemeButton", 'Reset', 'themeButton', { "onclick": "WebHelper().PageNav().customizer().resetTheme()" }))
                 // append(customizer, gen(span, "customizerSaveThemeButton", 'save', 'themeButton', { "onclick": "saveTheme()" }))
 
             };
@@ -1050,7 +1049,7 @@ const WebHelper = () => {
                     var id = `${variable[1]}Control`
                     append("#themeSliderGroup", gen(p, id, gen(span, `${id}Span`, variable[0]), "themeSliderGroupP"))
                     if (variable[1] == "fontFamily") {
-                        append(`#${id}Span`, gen(select, variable[1], "", "themeselect", { "onchange": "GeneratorWebHelper().PageNav().customizer().updateVar(this)" }))
+                        append(`#${id}Span`, gen(select, variable[1], "", "themeselect", { "onchange": "WebHelper().PageNav().customizer().updateVar(this)" }))
 
                         if (fontList == undefined) var fontList = new Set(["Poppins", "Exo", "Play", "Bebas Neue", "Comic Neue", "Cutive Mono", "Permanent Marker", "Dancing Script", "Roboto", "Montserrat", "Gulzar", "Splash", "Bebas Neue", "Comic Neue", "Cutive Mono", "Dancing Script", "Tahoma", "Arial", "Lora", "Hind", "Cairo", "Bitter", "The Nautigal", "Abel", "Yellowtail", "Caveat", "Open sans", "Verdana", "Inter", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "sans serif"].sort())
                         fontList.forEach(f => {
@@ -1061,7 +1060,7 @@ const WebHelper = () => {
                         append(`#${id}Span`, gen(span, `${variable[1]}Disp`, "", "sliderDisp"))
                         append(`#${id}`, "<br")
 
-                        append(`#${id}`, gen(input, variable[1], "", "slider themeslider", { "type": "range", "min": 0, "max": 360, "step": .1, "value": 0, "onchange": "GeneratorWebHelper().PageNav().customizer().updateVar(this)" }))
+                        append(`#${id}`, gen(input, variable[1], "", "slider themeslider", { "type": "range", "min": 0, "max": 360, "step": .1, "value": 0, "onchange": "WebHelper().PageNav().customizer().updateVar(this)" }))
                     }
 
 
@@ -1153,7 +1152,7 @@ const WebHelper = () => {
                     var val = target.value
                     if (id.includes("fontFamily")) {
                         // var FontName = cssvar("fontFamily").replaceAll(" ", "+")
-                        var FontName = val.replaceAll(" ", "+")
+                        var FontName = val.replaceAll(/\s+/g, "+")
                         var googleFontUrlStyle = `
                     @import url('https://fonts.googleapis.com/css2?family=${FontName}&display=swap');
                     `

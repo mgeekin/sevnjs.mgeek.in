@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> { config = {allowUnfree = true;}; } }:
 #{ pkgs ? import (fetchTarball  "https://github.com/NixOS/nixpkgs/tarball/nixos-24.05") {} }:
 let
   message = "Lets Start Development";
@@ -8,9 +8,11 @@ pkgs.mkShellNoCC {
 
   packages = with pkgs; [
     nodejs
-    nodePackages.browser-sync 
-    nodePackages.nodemon
-    vscodium 
+    browser-sync 
+    nodemon
+    concurrently
+#    vscodium
+    vscode 
     #firefox
     vim 
     curl     
@@ -18,7 +20,9 @@ pkgs.mkShellNoCC {
   ];
 
   shellHook = ''
-    cowsay ${message}
-    npm run dev & echo "y" | codium . #& firefox localhost:3000 & npm run dev & firefox 127.0.0.1:5502
+	npm install
+#	npm run dev & echo "y" | codium . & firefox 127.0.0.1:4000
+	npm run dev & echo "y" | code . & firefox 127.0.0.1:4000
+
     '';
 }

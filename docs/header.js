@@ -3,12 +3,12 @@
 function loadHeader() {
 
     append(appheader, "", "over");
-    append(appheader, gen("span", "title"));
-    append(title,
+    append(appheader, gen("span", "apptitle"));
+    append(apptitle,
            gen("span", "logo", gen("img", "sitelogo", "", "sitelogo", { "src": site.logo })),
     );
 
-    append(title,
+    append(apptitle,
             gen("span", "siteheading")
     );
 
@@ -85,7 +85,7 @@ var headerStyle = `
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: hsla(233, 76%, 6%,1);
+    background-color: rgb(22, 4, 27);
     color:white;
     box-shadow: 0px 2px 3px hsla(var(--hueAscent,180),var(--satAscent,60%),var(--lightAscent,50%),.8);
     z-index: 20;
@@ -115,7 +115,7 @@ var headerStyle = `
         }
     }
 
-    #title {
+    #apptitle {
         display: flex;
 
         #siteheading {
