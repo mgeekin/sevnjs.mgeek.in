@@ -1152,7 +1152,7 @@ const WebHelper = () => {
                     var val = target.value
                     if (id.includes("fontFamily")) {
                         // var FontName = cssvar("fontFamily").replaceAll(" ", "+")
-                        var FontName = val.replaceAll(" ", "+")
+                        var FontName = val.replaceAll(/\s+/g, "+")
                         var googleFontUrlStyle = `
                     @import url('https://fonts.googleapis.com/css2?family=${FontName}&display=swap');
                     `

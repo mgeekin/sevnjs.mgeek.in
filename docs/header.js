@@ -85,7 +85,7 @@ var headerStyle = `
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: hsla(233, 76%, 6%,1);
+    background-color: rgb(22, 4, 27);
     color:white;
     box-shadow: 0px 2px 3px hsla(var(--hueAscent,180),var(--satAscent,60%),var(--lightAscent,50%),.8);
     z-index: 20;

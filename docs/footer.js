@@ -2,12 +2,12 @@ function loadFooter() {
     var footerStyle = `#appfooter {
     display: flex;
     min-height: 3em;
-    background: hsl(236, 38%, 15%);
+    background: hsl(calc(var(--hue) + 25), 75%, 16%);
     width: 100%;
     z-index: 2;
     flex-direction: column;
     // padding-inline: clamp(1em, 10vw, 15%);
-    padding-top:5em;
+    padding-top:2em;
     a  {
         color: $footcolor;
     }

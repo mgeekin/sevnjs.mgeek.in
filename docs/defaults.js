@@ -2,12 +2,12 @@
 const site = {}
 site.title = "SevnJS"
 site.site_title = site.title
-site.subtitle = `${site.title} : 7 function frontend library`
+site.subtitle = `A Lightweight 7-Function JavaScript Library for Network-Efficient Web Applications, Suitable for Resource-Constrained IoT Devices`
 site.logo = '/assets/img/logo.png'
 site.image = site.logo
 site.favicon = '/assets/img/favicon.ico'
 site.image = site.logo
-site.description = '"7 function frontend library for modular website frontend desing. Formely known as GeneratorJS. Few functions to generate frontend design without juggeling between HTML CSS and JS. Reduce repetetive typing in HTML.'
+site.description = "SevnJS: A Lightweight 7-Function JavaScript Library for Network-Efficient Web Applications, Suitable for Resource-Constrained IoT Devices. For modular website frontend desing formely known as GeneratorJS. Few functions to generate frontend design without juggeling between HTML CSS and JS. Reduce repetetive typing in HTML."
 site.url = 'https://sevnjs.mgeek.in/'
 site.sponsors = `https://github.com/sponsors/sevnjs`
 site.github = `https://github.com/sevnjs/cdn.git`

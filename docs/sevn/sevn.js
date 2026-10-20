@@ -1,6 +1,9 @@
 function SevnJS() {
     const license = "copyrights Prateek Raj Gautam, soon to be released under Apache 2.0";
     const version = `v0.9.6`;
+//     const description = `Formerly known as GeneratorJS.
+// A Lightweight 7-Function JavaScript Library for Network-Efficient Web Applications, Suitable for Resource-Constrained IoT Devices.
+// Frontend design with less typing, few edits to HTML/CSS/SCSS. Everything (HTML/CSS/SCSS) is javascript, make web like programmer.`;
 
     //grab start
     const grab = (parentidstr) => {
@@ -28,13 +31,9 @@ function SevnJS() {
 
         //subfunctions start
         var blockPattern = {
-            // code: /\s*```([^\n]*)\n([^`]*)```[\s\n]*/mi,
             code: /^\s*```(?:(\w*)\n)?([\s\S]*?)```[\s\n]*/mi,
-            // html1:/^\s*<(?!\/)([^>\s]*)[^>]*>[\s\S]*?<\/\1>[\s\n]*/mi,
             html1: /^<(?!\/)([^>\s]*)[^>]*>[\s\S]*?<\/\1>[\s\n]*/mi,
             html2: /<(br|hr|img|area|base|col|embed|input|link|meta|param|source|track|wbr)[^\>]*?>\s*\n*/i,
-            // heading1: /^\s*\#{1,6}\s+([^\n]*)[\s\n]*/i,
-            // heading2: /^\s*(\w[^\n]*)\n(-|\=){4,}[\s\n]*/im,
             heading1: /^\#{1,6}\s+([^\n]*)[\s\n]*/i,
             heading2: /^(\w[^\n]*)\n(-|\=){4,}[\s\n]*/im,
             block: /^^\s*>\s+([^\n]*)[\s\n]*/i,
@@ -42,8 +41,6 @@ function SevnJS() {
             table: /^\s*(?:^\s*\|.*\|\s*\n?)+/m,
             list: /^\s*(?m:^(?:\s*(?:\*|-|\d+\.)\s+[^\n]+)(?:\n|$))+/m,
             reference: /^\n+\-{3,}$/im,
-            // paragraph:/^\s*[^\n]+(\s|\n)*/im,
-            // paragraph: /^(^[^-#|>\s][^\n]*(?:\n[^-#|>\s][^\n]*)*)/im,
             paragraph: /^(^[^-#|>\s][^\n]*(?:\n[^-#|>\s`][^\n]*)*)/im,
             empty: /^[\s\n]*/m,
             unknown: /^\s*.*\n*$/mi
@@ -96,8 +93,6 @@ function SevnJS() {
 
 
         const coderender = (block) => {
-            // var pattern = /^\s*```([^\n]*)\n([^`]*)```[\s\n]*/mi;
-            // var pattern = /^\s*```(?:([^\n]*)\n)?([\s\S]*?)```[\s\n]*/mi;//jsfrindly working;
             var pattern = /^\s*```([^\n]*)\n([\s\S]*)```[\s\n]*/mi; //js frindly and simple;
             const match = block.match(pattern);
             if (match) {
@@ -112,9 +107,6 @@ function SevnJS() {
         }
 
         const checklistrender = (block) => {
-            // var pattern = /^\s*(?:^\s*-\s+\[(?:\s*|[xX*])\]\s+[^\n]*\n?)+/gm;
-            // var pattern = /^\s*-\s+\[(?:\s*|[xX*])\]\s+[^\n]*$/gm;
-            // const match = block.match(pattern);
             var pattern = /-\s+\[([^\]]*)\]\s+([^\n]*)/gm;
             const match = block.matchAll(pattern);
             var res = "";
@@ -142,17 +134,12 @@ function SevnJS() {
         }
 
         const tablerender = (table) => {
-
-
-            // var tableHeadBodySepratorPattern = /(^\|)(?=(:|-))([^\w\d\s]*?)(\|\s*$)/gm;
             var tableHeadBodySepratorPattern = /(^\|)\s*(?=(:|-))([^\w\d]*?)(\|\s*$)/gm;
             var sep = table.matchAll(tableHeadBodySepratorPattern);
             var sep = Array.from(sep);
             if (sep.length > 0) {
                 var Sep = sep[0][0];
                 var alignment = Sep.substr(1, Sep.length - 2);
-                // alignment = alignment.replaceAll(":---:", "center").replaceAll(":---", "left").replaceAll("---:", "right").replaceAll("---", "justify");
-                // alignment = alignment.replaceAll(/\s*/g,"");
                 alignment = alignment.replaceAll(/\s*\:-{3,}\:\s*/gi, "center").replaceAll(/\s*\:-{3,}\s*/gi, "left").replaceAll(/\s*-{3,}\:\s*/ig, "right").replaceAll(/\s*-{3,}\s*/ig, "justify");
                 alignment = alignment.split("|");
                 var T = table.split(Sep);
@@ -214,7 +201,6 @@ function SevnJS() {
                 }
 
                 var parsedRow = ""
-                // var Col = Row.split("|") // not suitable to escape alone usie function to split
                 var Col = splitPipeOutsideBackticks(Row)
                 Col.forEach((cell, i) => {
                     parsedRow = parsedRow + `<td class='${alignment[i]}'>${cell}</td>`;
@@ -295,7 +281,6 @@ function SevnJS() {
                 var res = `<h${htype}>${textformat(matchArray[1])}</h${htype}>`;
 
                 return textformat(res);
-                // return res
             }
         }
 
@@ -363,8 +348,6 @@ function SevnJS() {
 
 
             // // blockMath
-            //https://regex101.com/r/QdJcQS/1
-            // var blockMathPattern = /\${2}([^$\n]+)\${2}/gm;
             var blockMathPattern = /(?<![\B(){}\[\]\w.$])\$\$([^\$\n]+)\$\$(?![\B(){}\[\]\w.$])/gm;
             match1 = md.matchAll(blockMathPattern);
             matchList = Array.from(match1);
@@ -374,23 +357,14 @@ function SevnJS() {
             })
 
 
-            // // inlineMath
-            //https://regex101.com/r/QdJcQS/1
-            // var inlineMathPattern = /(?<!\$)\$([^$\n]+)\$(?!\$)/gm
-            // var inlineMathPattern = /(?<!\$)\$([^$\n]+)\$(?!\$)/mg;
             var inlineMathPattern = /(?<![\B(){}\[\]\w.$])\$([^\$\n]+)\$(?![\B(){}\[\]\w.$])/gm
-
             match1 = md.matchAll(inlineMathPattern);
             matchList = Array.from(match1);
             matchList.forEach(p => {
-                // log(p)
                 md = md.replaceAll(p[0], `\\( ${p[1]} \\)`);
             })
 
 
-
-            // // imageurl
-            // https://regex101.com/r/EXVZcK/1
 
             var imageUrlPattern = /!\[([^\]]*)]\("?([^\)"']*)"?\)/gm;
             match1 = md.matchAll(imageUrlPattern);
@@ -402,10 +376,7 @@ function SevnJS() {
             })
 
             // // link
-            // https://regex101.com/r/APBkU8/1
-            // var linkPattern = /[^!]\[([^\]]*)\]\(([^\)]*)\)/gmi
             var linkPattern = /(?<!!)\[([^\]]*)\]\(([^\)]*)\)/gmi;
-
             match1 = md.matchAll(linkPattern);
             matchList = Array.from(match1);
             matchList.forEach(p => {
@@ -417,12 +388,6 @@ function SevnJS() {
 
             // // bold/italic/emph
             var italicPattern = /([*_]{1,3})(\S.*?\S)\1/g;
-            // var italicPattern = /([*_]{1,3})(\S.*?\S)\1(?!\S)/g;
-            // var italicPattern = /(?=[(^|\S)])([_*]{1,3})([`~!@#$%^&\*\(\\)\_\-\+\=\\\w ]+?)\1(?![\S])/gmi;
-            // var italicPattern = /(?=[(^|\S)])([_*]{1,3})([\w \*+\-\\\$#@1\d]+?)\1(?=[\n\s])/gmi;
-            // var italicPattern = /(?<=\W)([*_]{1,3})(\S[^\*_\n]+?\S)\1(?=\W)/mig;// need to be checked
-            //   var italicPattern = /(?<marks>\*{1,3}|_{1,3})(?<content>[^\s*_]+)\k<marks>/gmi
-            // var italicPattern = /([\s]+)((\*|_){1,3})([^\*_\n]+?)\1(?=\W)/gmi
             match1 = md.matchAll(italicPattern)
             matchList = Array.from(match1)
             matchList.forEach(p => {
@@ -441,9 +406,6 @@ function SevnJS() {
 
 
             // // strikethrough
-            // https://regex101.com/r/MLsQRh/1
-            //   var strikethroughPattern = /([~=]{2})(.*)\1/igm
-            // var strikethroughPattern = /(?=\W)([~=]{2,})([^~=\n]+)\1/igm
             var strikethroughPattern = /(?<=\W)([~=]{2,})([^~=\n]+)\1(?=\W)/gmi;
             match1 = md.matchAll(strikethroughPattern);
             matchList = Array.from(match1);
@@ -455,7 +417,6 @@ function SevnJS() {
 
 
             // reference
-            // https://regex101.com/r/eLzXSC/1                                 
             var referencelinkPattern = /(?<!!)\[([^\]]*)\]\s{0,3}\[([^\]]*)\]/gmi;
 
             match1 = md.matchAll(referencelinkPattern);
@@ -467,14 +428,12 @@ function SevnJS() {
             })
 
             // Blockreferencelist
-            // https://regex101.com/r/xu97SN/1
             var listBlockPattern = /(^ *(\[[^\]]*\]:)\s+[^\n]*){1,}/gmi;
             match1 = md.matchAll(listBlockPattern);
             matchList = Array.from(match1);
             matchList.forEach(p => {
                 var block = p[0]
                 // referencelistBlock
-                // https://regex101.com/r/JC0xSx/1
                 var listPattern = /^\[([^\]]*)\]:\s+([^\n]*)$/gmi;
                 list = block.matchAll(listPattern);
                 listEntry = Array.from(list);
@@ -483,16 +442,12 @@ function SevnJS() {
                 })
 
                 // subreferencelist
-                // https://regex101.com/r/DYvI2z/1
                 var sublistPattern = /^ +(\*|-)\s+([^\n]*)$/gmi;
                 list = block.matchAll(sublistPattern);
                 listEntry = Array.from(list);
                 listEntry.forEach(li => {
-                    //                        block = block.replaceAll(li[0], `\n<ul>\n\t<li>${li[1]}</li></ul>`) trying sub list
                     block = block.replaceAll(li[0], `\n<ul>\n\t<li>${li[2]}</li></ul>`);
                 })
-
-                // md = md.replaceAll(p[0], `\n<ul>${block}</ul>`)
                 md = md.replaceAll(p[0], `\n${block}`);
             })
             return md;
@@ -525,22 +480,6 @@ function SevnJS() {
         var checkboxno = grab("input").length;
         var lex = [];
 
-        //preprocess for code to html
-        // // code
-        // https://regex101.com/r/WpO7gY/1
-        // codePattern = /```([^\s]*)([^```]*)```/gmi
-
-
-        // var codePattern = /`{3}([^\n]*)\n([^`]*)`{3}/gmi
-        // var match1 = mdinput.matchAll(codePattern)
-        // var matchList = Array.from(match1)
-        // matchList.forEach(p => {
-        //     //               console.log(p)
-        //     mdinput = mdinput.replaceAll(p[0], `\n<pre><code class="${p[1]}, language-${p[1]},code-block">${p[2]}</code></pre>`)
-        // })
-
-
-
         // identify block type and content
         while (mdinput.length > 0) {
             var res = checkBlockTypeStage1(mdinput);
@@ -562,7 +501,6 @@ function SevnJS() {
         }
 
 
-        // lex = lex.filter(o => o.type !== "empty")
 
         function extractscript(htmlstr) {
             const parser = new DOMParser();
@@ -684,8 +622,6 @@ function SevnJS() {
                         if (child.outerHTML != undefined) {
                             // If the child is a DOM element with outerHTML, append its outerHTML
                             T.appendChild(child);
-                            // if (child.tagName != "SCRIPT") {T.innerHTML += child.outerHTML}
-                            // else {T.appendChild(child);}
                         }
                         if (child.outerHTML == undefined) {
                             // If the child is an object without outerHTML, convert it to HTML using objtohtml
@@ -725,7 +661,7 @@ function SevnJS() {
 
 
             
-            //dynamically add script tags in an executable way
+            //dynamically add script tags in an executable way TOBE CONSIDERED FOR SECURITY FLAWS VS EASE
             function appendScript(parentElement, scripttag) {
                 // Create a new script element
                 var newScript = document.createElement('script');
@@ -1706,7 +1642,5 @@ function SevnJS() {
 window.$ = SevnJS();
 $.init();
 
-// Load script.js from current directory
-
-
+// Load script.js from current directory relative to index.html
 load("./script.js");

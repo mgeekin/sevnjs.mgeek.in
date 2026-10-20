@@ -8,11 +8,11 @@ pkgs.mkShellNoCC {
 
   packages = with pkgs; [
     nodejs
-    #nodePackages.browser-sync 
-    #nodePackages.nodemon
-    #nodePackages.concurrently
-    vscodium
-#    vscode 
+    browser-sync 
+    nodemon
+    concurrently
+#    vscodium
+    vscode 
     #firefox
     vim 
     curl     
@@ -21,7 +21,8 @@ pkgs.mkShellNoCC {
 
   shellHook = ''
 	npm install
-	npm run dev & echo "y" | codium . & firefox 127.0.0.1:4000
+#	npm run dev & echo "y" | codium . & firefox 127.0.0.1:4000
+	npm run dev & echo "y" | code . & firefox 127.0.0.1:4000
 
     '';
 }
